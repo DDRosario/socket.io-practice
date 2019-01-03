@@ -2,9 +2,19 @@ import React from 'react';
 
 export default function UserForm(props) {
   return (
-    <form>
-      <input type="text" placeholder="Please enter a username" />
-      <input type="submit">Submit</input>
+    <form
+      onSubmit={e => {
+        props.handleSubmit(e);
+      }}
+    >
+      <input
+        type="text"
+        placeholder="Please enter a username"
+        onChange={e => {
+          props.handleChange(e, 'user');
+        }}
+      />
+      <input type="submit" />
     </form>
   );
 }

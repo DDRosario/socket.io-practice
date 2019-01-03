@@ -1,21 +1,66 @@
 import React from 'react';
 import UserForm from './components/UserForm';
 import MessageForm from './components/MessageForm';
+import {
+  joinChat,
+  subscribeToChat,
+  sendMessage,
+  userDisconnected
+} from './socketAPI';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
+      message: '',
       user: '',
+      description: '',
       loggedIn: false
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmitUser = this.handleSubmitUser.bind(this);
+    this.handleSubmitMessage = this.handleSubmitMessage.bind(this);
   }
-  handleChange(e, option) {}
-  handleSubmit(e, option) {}
-  componentDidMount() {}
+  handleChange(e, option) {
+    const update = {};
+    update[option] = e.target.value;
+    this.setState(update);
+    e.preventDefault();
+  }
+
+  handleSubmitUser(e, option) {
+    joinChat(msg => {
+      this.setState({
+        messages: [msg].concat(this.state.messages)
+      });
+    }, this.state.user);
+    this.setState({ loggedIn: true });
+    e.preventDefault();
+  }
+
+  handleSubmitMessage(e) {
+    sendMessage(
+      () => {
+        this.setState({ message: '' });
+      },
+      this.state.user,
+      this.state.message
+    );
+    e.preventDefault();
+    e.target.reset();
+  }
+
+  componentDidMount() {
+    userDisconnected(({ user, description }) => {
+      this.setState({
+        messages: [
+          { user: 'SYSTEM', message: `${user} has disconnected from chat` }
+        ].concat(this.state.messages),
+        description: description
+      });
+    });
+  }
   render() {
     return (
       <span>
@@ -23,12 +68,12 @@ export default class App extends React.Component {
           {this.state.loggedIn ? (
             <MessageForm
               handleChange={this.handleChange}
-              handleSubmit={this.handleSubmit}
+              handleSubmit={this.handleSubmitMessage}
             />
           ) : (
             <UserForm
               handleChange={this.handleChange}
-              handleSubmit={this.handleSubmit}
+              handleSubmit={this.handleSubmitUser}
             />
           )}
         </div>
@@ -37,7 +82,7 @@ export default class App extends React.Component {
           return (
             <span>
               <div>
-                {message[0]} : {messsage[1]}
+                {message.user} : {message.message}
               </div>
             </span>
           );

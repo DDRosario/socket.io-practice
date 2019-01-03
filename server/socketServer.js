@@ -26,7 +26,9 @@ io.on('connection', socket => {
     });
 
     socket.on('send message', msg => {
-      socket.broadcast.emit('send message', msg);
+      console.log('hello');
+      console.log(user, 'sent a message ', msg);
+      io.emit('send message', msg);
     });
   });
 });

@@ -4,7 +4,10 @@
   "description": "Practice working with sockets",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./server",
+    "socket": "nodemon ./server/socketServer.js",
+    "build": "webpack -w"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +22,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
-    "babel-loader": "^8.0.4",
+    "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "react": "^16.7.0",
